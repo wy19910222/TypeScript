@@ -210,7 +210,7 @@ export class Curve {
 	 * @param t The current time as a percentage of the total time.
 	 */
 	public ease(t: number): number {
-		return this.evaluate(t)
+		return this.evaluate(t);
 	}
 
 	/**
