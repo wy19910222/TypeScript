@@ -42,7 +42,6 @@ export class CurveKeyFrame {
 	}
 }
 
-// @cc._decorator.ccclass
 export class Curve {
 	// Const of 1, do not modify
 	public static readonly CONST = new Curve(new CurveKeyFrame(1, 1));
