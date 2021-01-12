@@ -59,13 +59,11 @@ Object.diff = function (obj1, obj2) {
 		let diff = {};
 		map.set(obj2, diff);
 		for (const key in obj1) {
-			key === "decoded" && console.error("1-------", obj1.hasOwnProperty(key), obj2.hasOwnProperty(key));
 			if (obj1.hasOwnProperty(key) && !obj2.hasOwnProperty(key)) {
 				diff[key] = -1;
 			}
 		}
 		for (const key in obj2) {
-			key === "decoded" && console.error("2-------", obj1.hasOwnProperty(key), obj2.hasOwnProperty(key));
 			if (obj2.hasOwnProperty(key) && !obj1.hasOwnProperty(key)) {
 				diff[key] = 1;
 			}
