@@ -233,11 +233,25 @@ export class CoroutineManager extends cc.Component {
 
 	private isCoroutineDone(coroutine: Coroutine): boolean {
 		for (let coroutines of this._coroutinesMap.values()) {
-			if (coroutines && coroutines.includes(coroutine)) {
-				return false;
+			for (let index = coroutines.length - 1; index >= 0; --index) {
+				if (coroutines[index] === coroutine) {
+					return false;
+				}
 			}
 		}
 		return true;
+	}
+
+	private getCoroutine(iterator: IterableIterator<any>): Coroutine {
+		for (let coroutines of this._coroutinesMap.values()) {
+			for (let index = coroutines.length - 1; index >= 0; --index) {
+				let coroutine = coroutines[index];
+				if (coroutine.iterator === iterator) {
+					return coroutine;
+				}
+			}
+		}
+		return null;
 	}
 
 	private removeCoroutineBy(predicate: (type: Function, coroutine: Coroutine) => boolean): void {
@@ -251,7 +265,13 @@ export class CoroutineManager extends cc.Component {
 	}
 	//#endregion
 
+	public startCo(coroutine: Coroutine): Coroutine;
+	public startCo(iterator: IterableIterator<any>, owner?: cc.Component): Coroutine;
 	public startCo(iteratorOrCoroutine: IterableIterator<any> | Coroutine, owner?: cc.Component): Coroutine {
+		if (this.isRunning(iteratorOrCoroutine)) {
+			throw new Error("Coroutine is already running!");
+		}
+
 		let coroutine: Coroutine;
 		if (iteratorOrCoroutine instanceof Coroutine) {
 			coroutine = iteratorOrCoroutine;
@@ -277,12 +297,25 @@ export class CoroutineManager extends cc.Component {
 		this.removeCoroutineBy((_, coroutine) => coroutine.owner === owner);
 	}
 
-	public moveNext(iteratorOrCoroutine: IterableIterator<any> | Coroutine, owner?: cc.Component): Coroutine {
-		this.stopCo(iteratorOrCoroutine);
+	public moveNext(iteratorOrCoroutine: IterableIterator<any> | Coroutine): void {
 		if (iteratorOrCoroutine instanceof Coroutine) {
-			return this.startCo(iteratorOrCoroutine);
+			let isRunning = !this.isCoroutineDone(iteratorOrCoroutine);
+			if (isRunning) {
+				this.stopCo(iteratorOrCoroutine);
+				this.startCo(iteratorOrCoroutine);
+			} else {
+				this.startCo(iteratorOrCoroutine);
+				this.stopCo(iteratorOrCoroutine);
+			}
 		} else {
-			return this.startCo(iteratorOrCoroutine, owner);
+			let coroutine = this.getCoroutine(iteratorOrCoroutine);
+			if (coroutine) {
+				this.stopCo(coroutine);
+				this.startCo(coroutine);
+			} else {
+				this.startCo(iteratorOrCoroutine);
+				this.stopCo(iteratorOrCoroutine);
+			}
 		}
 	}
 
@@ -298,6 +331,14 @@ export class CoroutineManager extends cc.Component {
 			if (steps >= maxSteps) {
 				console.warn("Flush " + maxSteps + " steps!");
 			}
+		}
+	}
+
+	public isRunning(iteratorOrCoroutine: IterableIterator<any> | Coroutine): boolean {
+		if (iteratorOrCoroutine instanceof Coroutine) {
+			return !this.isCoroutineDone(iteratorOrCoroutine);
+		} else {
+			return !!this.getCoroutine(iteratorOrCoroutine);
 		}
 	}
 
@@ -390,7 +431,7 @@ export class CoroutineManager extends cc.Component {
 	}
 	private readonly LAG_FRAME_COUNT_MAX = 20;
 	private readonly LAG_CHECK_FRAME_COUNT = 3;
-	private readonly LAG_CHECK_THRESHOLD = 20;
+	private readonly LAG_CHECK_THRESHOLD = 0.00001;
 	private * doWaitForEndOfLag(): IterableIterator<any> {
 		let maxFrame = cc.director.getTotalFrames() + this.LAG_FRAME_COUNT_MAX;
 		let deltaTimeList: number[] = [];
