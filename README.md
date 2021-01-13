@@ -114,7 +114,7 @@ CoroutineManager.instance.endOfLag(callback: () => void, owner?: cc.Component): 
 ```
 CoroutineManager.instance.waitForEndOfLag(owner?: cc.Component): Coroutine;
 ```
-　　  该协程对象可用于在另一个协程中yield。
+　 　 该协程对象可用于在另一个协程中yield。
 ```
 function* testCoroutine(): IterableIterator<any> {
 	console.log("Instantiate a large prefab.");
