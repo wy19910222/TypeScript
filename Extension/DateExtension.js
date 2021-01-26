@@ -8,13 +8,18 @@ Date.prototype.toCustomString = function (formatStr) {
 		let hours12 = hours % 12 + "";
 		let minutes = this.getMinutes() + "";
 		let seconds = this.getSeconds() + "";
-		return formatStr.replace(/y{3,}/, year).replace(/y{1,2}/, year.substring(2))
-			.replace(/M{2,}/, month.padStart(2, "0")).replace("M", month)
-			.replace(/d{2,}/, date.padStart(2, "0")).replace("d", date)
-			.replace(/H{2,}/, hours24.padStart(2, "0")).replace("H", hours24)
-			.replace(/h{2,}/, hours12.padStart(2, "0")).replace("h", hours12)
-			.replace(/m{2,}/, minutes.padStart(2, "0")).replace("m", minutes)
-			.replace(/s{2,}/, seconds.padStart(2, "0")).replace("s", seconds);
+		let milliSeconds = this.getMilliseconds();
+		let ms = milliSeconds + "";
+		let ms10 = Math.floor(milliSeconds / 10) + "";
+		let ms100 = Math.floor(milliSeconds / 100) + "";
+		return formatStr.replace(/ms|f{3,}/g, ms.padStart(3, "0")).replace(/ff/g, ms10.padStart(2, "0")).replace(/f/g, ms100)
+			.replace(/y{3,}/g, year).replace(/y{1,2}/g, year.substring(2))
+			.replace(/M{2,}/g, month.padStart(2, "0")).replace(/M/g, month)
+			.replace(/d{2,}/g, date.padStart(2, "0")).replace(/d/g, date)
+			.replace(/H{2,}/g, hours24.padStart(2, "0")).replace(/H/g, hours24)
+			.replace(/h{2,}/g, hours12.padStart(2, "0")).replace(/h/g, hours12)
+			.replace(/m{2,}/g, minutes.padStart(2, "0")).replace(/m/g, minutes)
+			.replace(/s{2,}/g, seconds.padStart(2, "0")).replace(/s/g, seconds);
 	}
 	return this.toString();
 };
