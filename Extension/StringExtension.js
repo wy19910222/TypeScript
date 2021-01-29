@@ -47,7 +47,7 @@ String.prototype.padEnd = String.prototype.padEnd || function (maxLength, fillSt
 };
 String.prototype.format = function (...args) {
 	let result = this.toString();
-	
+
 	let argLength = args.length;
 	if (argLength === 0) {
 		return this.toString();
@@ -105,6 +105,6 @@ String.formatParamFunc = function (arg, param) {
 	return arg;
 };
 
-String.prototype.replaceAll = function(s1, s2) {
-    return this.replace(new RegExp(s1, "gm"), s2);
+String.prototype.replaceAll = function(searchValue, replaceValue, multipleLine) {
+	return this.replace(new RegExp(searchValue, multipleLine ? "gm" : "g"), replaceValue);
 }
