@@ -10,7 +10,9 @@ declare namespace cc {
 	namespace director {
 		function getTotalFrames(): number;
 		function getDeltaTime(): number;
-		function getScene(): Node;
+	}
+	namespace game {
+		function addPersistRootNode(node: Node): void;
 	}
 }
 
@@ -89,8 +91,8 @@ export class CoroutineManager extends cc.Component {
 	public static get instance(): CoroutineManager {
 		if (!this.s_instance) {
 			let node = new cc.Node("CoroutineManager");
-			node.setParent(cc.director.getScene());
 			this.s_instance = node.addComponent(CoroutineManager);
+			cc.game.addPersistRootNode(node);
 		}
 		return this.s_instance;
 	}
