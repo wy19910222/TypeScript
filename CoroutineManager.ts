@@ -86,7 +86,6 @@ export class Coroutine {
 	}
 }
 
-// @cc._decorator.ccclass
 export class CoroutineManager extends cc.Component {
 	private static s_instance: CoroutineManager;
 	public static get instance(): CoroutineManager {
