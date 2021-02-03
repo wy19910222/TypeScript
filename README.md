@@ -1,6 +1,6 @@
-# CoroutineManager: 利用js的generator做的协程管理器
+## CoroutineManager: 利用js的generator做的协程管理器
 
-## 新建一个协程
+#### 新建一个协程
 调用startCo可以新建一个协程，并返回一个Coroutine对象。
 ```
 function* testCoroutine(): IterableIterator<any> {
@@ -23,7 +23,7 @@ startCo传入IterableIterator<any>对象时，还可以传入一个cc.Component�
 CoroutineManager.instance.startCo(iterator, owner);
 ```
 
-## 终止一个协程
+#### 终止一个协程
 调用stopCo传入一个Coroutine或IterableIterator<any>对象可以终止尚未执行完毕的协程，如果协程已经执行完毕，则不做任何处理。
 ```
     CoroutineManager.instance.stopCo(iteratorOrCoroutine);
@@ -33,13 +33,13 @@ CoroutineManager.instance.startCo(iterator, owner);
     CoroutineManager.instance.stopAllCo(owner);
 ```
 
-## 单步执行协程
+#### 单步执行协程
 调用moveNext传入一个Coroutine或IterableIterator<any>对象可以单步执行协程，协程将从当前yield执行到下一个yield，并保持执行状态或终止状态。
 ```
     CoroutineManager.instance.moveNext(iteratorOrCoroutine);
 ```
 
-## 强制协程执行完毕
+#### 强制协程执行完毕
 调用flush传入一个Coroutine或IterableIterator<any>对象可以强制协程执行完毕，协程将从当前yield执行到最终状态并终止。
 ```
     CoroutineManager.instance.flush(iteratorOrCoroutine);
@@ -49,13 +49,13 @@ CoroutineManager.instance.startCo(iterator, owner);
     CoroutineManager.instance.flush(iteratorOrCoroutine, 20);
 ```
 
-## 判断协程是否已终止
+#### 判断协程是否已终止
 调用isRunning传入一个Coroutine或IterableIterator<any>对象可以判断该协程是否正在进行中。
 ```
     CoroutineManager.instance.isRunning(iteratorOrCoroutine);
 ```
 
-## 简化协程的使用
+#### 简化协程的使用
 CoroutineManager提供了一些简便的协程使用接口，在需求符合的前提下，调用以下接口，创建协程可以**不需要另写一个generator函数**。
 
 * 在下一个lateUpdate执行逻辑

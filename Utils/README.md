@@ -1,4 +1,4 @@
-# Curve: 基于给定的关键帧，通过埃尔米特插值计算任意时间对应的值。  
+## Curve: 基于给定的关键帧，通过埃尔米特插值计算任意时间对应的值。  
 主要用于在Laya、Cocos Creator、Egret等引擎中自定义缓动过程，可以通过Unity或其他曲线编辑工具里调好曲线，将关键帧的值记录下来，然后在编写代码时使用。  
 另外，Curve类声明了几个常见的曲线作为静态变量：CONST、LINEAR、EASE_IN、EASE_OUT、SWING、EASE_PINGPONG、EASE_PARABOLA。  
 Curve类的ease函数可以让曲线在上述3个引擎的缓动函数中使用，例如：  
