@@ -3,7 +3,6 @@
  * @date 2020/10/29-10:27
  */
 
-// @cc._decorator.ccclass("CurveKeyFrame")
 export class CurveKeyFrame {
 	public _time?: number;
 	public get time(): number {
