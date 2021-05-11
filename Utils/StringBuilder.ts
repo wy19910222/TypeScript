@@ -35,7 +35,7 @@ export class StringBuilder {
 		}
 	}
 
-	public clear(str: string): void {
+	public clear(): void {
 		this._buffers = [];
 		this._length = 0;
 	}
