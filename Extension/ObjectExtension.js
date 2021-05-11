@@ -116,3 +116,13 @@ Object.trim = function (obj, deletedKeys) {
 	}
 	return obj;
 };
+
+Object.slice = function (obj, keys) {
+	let newObj = {};
+	keys && keys.forEach(key => newObj[key] = obj[key]);
+	return newObj;
+};
+
+Object.pluck = function (obj, keys) {
+	return keys ? keys.map(key => obj[key]) : [];
+};

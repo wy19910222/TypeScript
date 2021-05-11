@@ -131,6 +131,18 @@ Object.findByPath({key1: ["element1", {key2: "foo"}]}, "key1.1.key2");  // "foo"
 trim<T extends Object>(obj: T, deletedKeys?: string[]): T;
 ```
 
+#### Object.slice
+提取obj中指定的若干个key生成一个新的对象。
+```
+slice<T extends Object, K extends keyof T>(obj: T, keys: K[]): T;
+```
+
+#### Object.pluck
+提取obj中指定的若干个key生成一个value数组。
+```
+pluck<T extends Object, K extends keyof T>(obj: T, keys: K[]): T[K][];
+```
+
 
 ## StringExtension
 

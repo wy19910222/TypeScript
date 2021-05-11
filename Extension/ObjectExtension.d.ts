@@ -24,4 +24,20 @@ interface ObjectConstructor {
 	 * @return {Object} The target object.
 	 */
 	trim<T extends Object>(obj: T, deletedKeys?: string[]): T;
+
+	/**
+	 * Slice object by keys, weed out other keys.
+	 * @param {Object} obj The target object to slice.
+	 * @param {string[]} keys left keys.
+	 * @return {Object} The sliced object.
+	 */
+	slice<T extends Object, K extends keyof T>(obj: T, keys: K[]): T;
+
+	/**
+	 * Pluck values by keys in object.
+	 * @param {Object} obj The target object to pluck.
+	 * @param {string[]} keys plucked keys array.
+	 * @return {Object} plucked values array.
+	 */
+	pluck<T extends Object, K extends keyof T>(obj: T, keys: K[]): T[K][];
 }
