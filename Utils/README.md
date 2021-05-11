@@ -20,3 +20,5 @@ let obj = {value: 200};
 let duration = 300;
 cc.tween(obj).to(duration, {value: 1000}, {easing: Curve.EASE_OUT.ease}).start();
 ``` 
+
+## 未完待续...
