@@ -130,17 +130,42 @@ Object.findByPath({key1: ["element1", {key2: "foo"}]}, "key1.1.key2");  // "foo"
 ```
 trim<T extends Object>(obj: T, deletedKeys?: string[]): T;
 ```
+```typescript
+// example:
+Object.trim({key1: "value1", key2: undefined, key3: {key31: "value31", key32: undefined}});
+// {key1: "value1", key3: {key31: "value31", key32: undefined}}
+```
 
 #### Object.slice
 提取obj中指定的若干个key生成一个新的对象。
 ```
 slice<T extends Object, K extends keyof T>(obj: T, keys: K[]): T;
 ```
+```typescript
+// example:
+Object.slice({key1: "value1", key2: "value2", key3: "value3"}, ["key1", "key3"]);  // {key1: "value1", key3: "value3"}
+```
 
 #### Object.pluck
 提取obj中指定的若干个key生成一个value数组。
 ```
 pluck<T extends Object, K extends keyof T>(obj: T, keys: K[]): T[K][];
+```
+```typescript
+// example:
+Object.pluck({key1: "value1", key2: "value2", key3: "value3"}, ["key1", "key3"]);  // ["value1", "value3"]
+```
+
+#### Object.fromEntries
+将一个可迭代对象（比如Map或元素为键值对的数组）转化为对象
+```
+fromEntries<T extends Object, K extends keyof T>(iterable?: Iterable<[K, T[K]]> | null): T;
+```
+```typescript
+// example:
+Object.fromEntries([["key", "value"]]);  // {key: "value"}
+Object.fromEntries(new Map([["key", "value"]]));  // {key: "value"}
+Object.fromEntries(new Map([["key", "value"]]).entries());  // {key: "value"}
 ```
 
 
