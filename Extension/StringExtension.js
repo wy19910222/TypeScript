@@ -107,4 +107,4 @@ String.formatParamFunc = function (arg, param) {
 
 String.prototype.replaceAll = function(searchValue, replaceValue, multipleLine) {
 	return this.replace(new RegExp(searchValue, multipleLine ? "gm" : "g"), replaceValue);
-}
+};
