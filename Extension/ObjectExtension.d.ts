@@ -31,7 +31,7 @@ interface ObjectConstructor {
 	 * @param {string[]} keys left keys.
 	 * @return {Object} The sliced object.
 	 */
-	slice<T extends Object, K extends keyof T>(obj: T, keys: K[]): T;
+	slice<T extends Object, K extends keyof T>(obj: T, keys: K[] | null): T;
 
 	/**
 	 * Pluck values by keys in object.
@@ -39,5 +39,12 @@ interface ObjectConstructor {
 	 * @param {string[]} keys plucked keys array.
 	 * @return {Object} plucked values array.
 	 */
-	pluck<T extends Object, K extends keyof T>(obj: T, keys: K[]): T[K][];
+	pluck<T extends Object, K extends keyof T>(obj: T, keys: K[] | null): T[K][];
+
+	/**
+	 * Create Object by array.
+	 * @param {ReadonlyArray<readonly [K, T[K]]> | null} iterable.
+	 * @return {T} Object.
+	 */
+	fromEntries<T extends Object, K extends keyof T>(iterable?: Iterable<[K, T[K]]> | null): T;
 }

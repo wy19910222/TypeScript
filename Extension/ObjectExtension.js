@@ -126,3 +126,13 @@ Object.slice = function (obj, keys) {
 Object.pluck = function (obj, keys) {
 	return keys ? keys.map(key => obj[key]) : [];
 };
+
+Object.fromEntries = Object.fromEntries || function (entries) {
+	let newObj = {};
+	if (entries) {
+		for (let element of entries) {
+			newObj[element[0]] = element[1];
+		}
+	}
+	return newObj;
+};
