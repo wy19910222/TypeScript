@@ -1,9 +1,10 @@
 String.prototype.startsWith = String.prototype.startsWith || function (searchString, position) {
-	return this.indexOf(searchString, position) === 0;
+	return this.indexOf(searchString, position) === position;
 };
 String.prototype.endsWith = String.prototype.endsWith || function (searchString, position) {
-	let index = this.indexOf(searchString, position);
-	return index !== -1 && index === (this.length - searchString.length);
+	position == null && (position = this.length);
+	let index = this.lastIndexOf(searchString);
+	return index !== -1 && index === (position - searchString.length);
 };
 String.prototype.includes = String.prototype.includes || function (searchString, position) {
 	return this.indexOf(searchString, position) !== -1;
