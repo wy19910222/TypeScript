@@ -1,8 +1,36 @@
 ## ArrayExtension
-扩展Array类，由于不希望被遍历到，所以做成了静态函数。
+扩展分为实例扩展和静态扩展，静态扩展是因为希望适用于所有ArrayLike并且不需要判断空引用。
+
+#### Array<T>.prototype.peek
+获取但不删除最后一个元素。
+```
+peek(): T | undefined;
+```
+#### Array<T>.prototype.includes
+是否包含元素。这个是为了兼容es5才加的。
+```
+includes(searchElement: T, fromIndex?: number): boolean;
+```
+#### Array<T>.prototype.contains
+是否包含符合指定条件的元素。
+```
+contains(predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): boolean;
+```
+#### Array<T>.prototype.find/findLast
+获取符合指定条件的元素，从前往后找/从后往前找。find是为了兼容es5才加的。
+```
+find(predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): T | undefined;
+findLast(predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): T | undefined;
+```
+#### Array<T>.prototype.findIndex/findLastIndex
+获取符合指定条件的索引，从前往后找/从后往前找。findIndex是为了兼容es5才加的。
+```
+findIndex(predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): number;
+findLastIndex(predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): number;
+```
 
 #### Array.includes
-是否包含元素。这个是为了兼容es5没有includes实例函数，才加的。
+是否包含元素。
 ```
 includes<T>(arrayLike: ArrayLike<T>, searchElement: T, fromIndex?: number): boolean;
 ```
@@ -12,7 +40,7 @@ includes<T>(arrayLike: ArrayLike<T>, searchElement: T, fromIndex?: number): bool
 contains<T>(arrayLike: ArrayLike<T>, predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): boolean;
 ```
 #### Array.indexOf/lastIndexOf
-获取元素索引，从前往后找/从后往前找。对应同名实例函数，为了整齐才加的。
+获取元素索引，从前往后找/从后往前找。
 ```
 indexOf<T>(arrayLike: ArrayLike<T>, searchElement: T, fromIndex?: number): number;
 lastIndexOf<T>(arrayLike: ArrayLike<T>, searchElement: T, fromIndex?: number): number;
@@ -24,7 +52,7 @@ find<T>(arrayLike: ArrayLike<T>, predicate: (value: T, index: number, obj: Array
 findLast<T>(arrayLike: ArrayLike<T>, predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): T | undefined;
 ```
 #### Array.findIndex/findLastIndex
-获取符合指定条件的索引，从前往后找/从后往前找。findIndex对应同名实例函数，为了整齐才加的。
+获取符合指定条件的索引，从前往后找/从后往前找。
 ```
 findIndex<T>(arrayLike: ArrayLike<T>, predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): number;
 findLastIndex<T>(arrayLike: ArrayLike<T>, predicate: (value: T, index: number, obj: ArrayLike<T>) => boolean, thisArg?: any): number;
