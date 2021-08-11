@@ -9,7 +9,7 @@ interface ObjectConstructor {
 	 * @param {Object} obj The target object.
 	 * @return {Object} The object's clone.
 	 */
-	deepcopy<T extends Object>(obj: T): T;
+	deepCopy<T extends Object>(obj: T): T;
 
 	/**
 	 * Differ obj1 and obj2, and return difference.

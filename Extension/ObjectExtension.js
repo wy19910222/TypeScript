@@ -1,4 +1,4 @@
-Object.deepcopy = function (obj) {
+Object.deepCopy = function (obj) {
 	let lookupDict = new Map();
 	let copy = function (obj) {
 		if (!(obj instanceof Object)) {
