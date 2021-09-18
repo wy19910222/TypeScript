@@ -162,7 +162,6 @@ export class CoroutineManager extends cc.Component {
 				if (!coroutine.owner || coroutine.owner.isValid) {
 					let current: WaitForSeconds = coroutine.current;
 					if (current.isDone) {
-
 						if (!coroutine.next().done) {
 							this.updateCoroutine(coroutine);
 							this.addCoroutine(coroutine);
@@ -376,19 +375,19 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
-	public loop(interval: number, loopUntil: () => boolean, owner?: cc.Component): Coroutine {
+	public loop(interval: number, loopUntil: () => boolean | void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLoop(interval == null ? null : new WaitForSeconds(interval), loopUntil, false, owner), owner);
 	}
-	public lateLoop(interval: number, loopUntil: () => boolean, owner?: cc.Component): Coroutine {
+	public lateLoop(interval: number, loopUntil: () => boolean | void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLoop(interval == null ? null : new WaitForSeconds(interval), loopUntil, true, owner), owner);
 	}
-	public frameLoop(interval: number, loopUntil: () => boolean, owner?: cc.Component): Coroutine {
+	public frameLoop(interval: number, loopUntil: () => boolean | void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLoop(interval == null ? null : new WaitForFrames(interval), loopUntil, false, owner), owner);
 	}
-	public lateFrameLoop(interval: number, loopUntil: () => boolean, owner?: cc.Component): Coroutine {
+	public lateFrameLoop(interval: number, loopUntil: () => boolean | void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLoop(interval == null ? null : new WaitForFrames(interval), loopUntil, true, owner), owner);
 	}
-	private * doLoop(interval: WaitForFrames | WaitForSeconds, loopUntil: () => boolean, late: boolean, owner?: cc.Component): IterableIterator<any> {
+	private * doLoop(interval: WaitForFrames | WaitForSeconds, loopUntil: () => boolean | void, late: boolean, owner?: cc.Component): IterableIterator<any> {
 		if (loopUntil) {
 			if (late) {
 				yield new WaitForLateUpdate();
