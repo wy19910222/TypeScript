@@ -164,14 +164,14 @@ Object.trim({key1: "value1", key2: undefined, key3: {key31: "value31", key32: un
 // {key1: "value1", key3: {key31: "value31", key32: undefined}}
 ```
 
-#### Object.slice
+#### Object.pick
 提取obj中指定的若干个key生成一个新的对象。
 ```
-slice<T extends Object, K extends keyof T>(obj: T, keys: K[]): T;
+pick<T extends Object, K extends keyof T>(obj: T, keys: K[] | null): Pick<T, K>;
 ```
 ```typescript
 // example:
-Object.slice({key1: "value1", key2: "value2", key3: "value3"}, ["key1", "key3"]);  // {key1: "value1", key3: "value3"}
+Object.pick({key1: "value1", key2: "value2", key3: "value3"}, ["key1", "key3"]);  // {key1: "value1", key3: "value3"}
 ```
 
 #### Object.pluck
