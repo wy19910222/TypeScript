@@ -268,6 +268,12 @@ export class CoroutineManager extends cc.Component {
 
 	public startCo(coroutine: Coroutine): Coroutine;
 	public startCo(iterator: IterableIterator<any>, owner?: cc.Component): Coroutine;
+	/**
+	 * 开启一个类Unity协程
+	 * @param iteratorOrCoroutine - 如果是新的迭代器对象(或协程)，则开启协程；如果是已开启并停止的迭代器对象(或协程)，则重新开启并继续
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public startCo(iteratorOrCoroutine: IterableIterator<any> | Coroutine, owner?: cc.Component): Coroutine {
 		if (this.isRunning(iteratorOrCoroutine)) {
 			throw new Error("Coroutine is already running!");
@@ -286,6 +292,10 @@ export class CoroutineManager extends cc.Component {
 		return coroutine;
 	}
 
+	/**
+	 * 结束某个协程
+	 * @param iteratorOrCoroutine - 需要结束的迭代器对象(或协程)
+	 */
 	public stopCo(iteratorOrCoroutine: IterableIterator<any> | Coroutine): void {
 		if (iteratorOrCoroutine instanceof Coroutine) {
 			this.removeCoroutineBy((_, coroutine) => coroutine === iteratorOrCoroutine);
@@ -294,10 +304,18 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
+	/**
+	 * 批量结束协程
+	 * @param owner - 协程的拥有者，在创建协程时绑定对应关系
+	 */
 	public stopAllCo(owner: cc.Component): void {
 		this.removeCoroutineBy((_, coroutine) => coroutine.owner === owner);
 	}
 
+	/**
+	 * 无论协程当前等待的是什么，都跳至下一个yield
+	 * @param iteratorOrCoroutine - 需要跳至下一个yield的迭代器对象(或协程)
+	 */
 	public moveNext(iteratorOrCoroutine: IterableIterator<any> | Coroutine): void {
 		if (iteratorOrCoroutine instanceof Coroutine) {
 			let isRunning = !this.isCoroutineDone(iteratorOrCoroutine);
@@ -320,6 +338,11 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
+	/**
+	 * 直接将协程执行到最终状态
+	 * @param iteratorOrCoroutine - 需要执行到最终状态的迭代器对象(或协程)
+	 * @param maxSteps - 由于协程可能是个死循环，所以用一个最大步数来限制执行步数
+	 */
 	public flush(iteratorOrCoroutine: IterableIterator<any> | Coroutine, maxSteps: number = Number.MAX_VALUE): void {
 		if (iteratorOrCoroutine) {
 			this.stopCo(iteratorOrCoroutine);
@@ -335,6 +358,11 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
+	/**
+	 * 判断协程是否正在运行
+	 * @param iteratorOrCoroutine - 需要判断状态的迭代器对象(或协程)
+	 * @return 协程是否正在运行
+	 */
 	public isRunning(iteratorOrCoroutine: IterableIterator<any> | Coroutine): boolean {
 		if (iteratorOrCoroutine instanceof Coroutine) {
 			return !this.isCoroutineDone(iteratorOrCoroutine);
@@ -343,6 +371,12 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
+	/**
+	 * 在下一个LateUpdate执行回调
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public late(callback: () => void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLate(callback, owner), owner);
 	}
@@ -353,15 +387,43 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
+	/**
+	 * 等待一段时间执行回调
+	 * @param delay - 等待的时间（秒）
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public once(delay: number, callback: () => void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doOnce(delay == null ? null : new WaitForSeconds(delay), callback, false, owner), owner);
 	}
+	/**
+	 * 先等到下一个LateUpdate，再等待一段时间执行回调
+	 * @param delay - 等待的时间（秒）
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public lateOnce(delay: number, callback: () => void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doOnce(delay == null ? null : new WaitForSeconds(delay), callback, true, owner), owner);
 	}
+	/**
+	 * 等待一定帧数执行回调
+	 * @param delay - 等待的帧数
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public frameOnce(delay: number, callback: () => void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doOnce(delay == null ? null : new WaitForFrames(delay), callback, false, owner), owner);
 	}
+	/**
+	 * 先等到下一个LateUpdate，再等待一定帧数执行回调
+	 * @param delay - 等待的帧数
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public lateFrameOnce(delay: number, callback: () => void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doOnce(delay == null ? null : new WaitForFrames(delay), callback, true, owner), owner);
 	}
@@ -375,15 +437,43 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
+	/**
+	 * 在条件满足之前，按一定时间间隔循环执行回调
+	 * @param interval - 执行回调的时间间隔（秒）
+	 * @param loopUntil - 需要执行的回调，也是跳出循环的条件，返回true则跳出循环
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public loop(interval: number, loopUntil: () => boolean | void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLoop(interval == null ? null : new WaitForSeconds(interval), loopUntil, false, owner), owner);
 	}
+	/**
+	 * 先等到下一个LateUpdate，再在条件满足之前，按一定时间间隔循环执行回调
+	 * @param interval - 执行回调的时间间隔（秒）
+	 * @param loopUntil - 需要执行的回调，也是跳出循环的条件，返回true则跳出循环
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public lateLoop(interval: number, loopUntil: () => boolean | void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLoop(interval == null ? null : new WaitForSeconds(interval), loopUntil, true, owner), owner);
 	}
+	/**
+	 * 在条件满足之前，按一定帧间隔循环执行回调
+	 * @param interval - 执行回调的帧间隔
+	 * @param loopUntil - 需要执行的回调，也是跳出循环的条件，返回true则跳出循环
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public frameLoop(interval: number, loopUntil: () => boolean | void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLoop(interval == null ? null : new WaitForFrames(interval), loopUntil, false, owner), owner);
 	}
+	/**
+	 * 先等到下一个LateUpdate，再在条件满足之前，按一定帧间隔循环执行回调
+	 * @param interval - 执行回调的帧间隔
+	 * @param loopUntil - 需要执行的回调，也是跳出循环的条件，返回true则跳出循环
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public lateFrameLoop(interval: number, loopUntil: () => boolean | void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doLoop(interval == null ? null : new WaitForFrames(interval), loopUntil, true, owner), owner);
 	}
@@ -398,9 +488,23 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
+	/**
+	 * 等待条件满足后执行回调
+	 * @param waitUntil - 等待的条件，返回true则执行回调
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public wait(waitUntil: () => boolean, callback: () => void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doWait(waitUntil, callback, false, owner), owner);
 	}
+	/**
+	 * 先等到下一个LateUpdate，再等待条件满足后执行回调
+	 * @param waitUntil - 等待的条件，返回true则执行回调
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
 	public lateWait(waitUntil: () => boolean, callback: () => void, owner?: cc.Component): Coroutine {
 		return this.startCo(this.doWait(waitUntil, callback, true, owner), owner);
 	}
@@ -418,22 +522,60 @@ export class CoroutineManager extends cc.Component {
 		}
 	}
 
-	public endOfLag(callback: () => void, owner?: cc.Component): Coroutine {
-		return this.startCo(this.doEndOfLag(callback, owner), owner);
+	/**
+	 * 等待条件满足或超时后执行回调
+	 * @param waitUntil - 等待的条件，返回true则执行回调
+	 * @param timeout - 超时时间
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
+	public timeoutWait(waitUntil: () => boolean, timeout: number, callback: (isTimeout: boolean) => void, owner?: cc.Component): Coroutine {
+		return this.startCo(this.doTimeoutWait(waitUntil, callback, false, timeout, owner), owner);
 	}
-	private * doEndOfLag(callback: () => void, owner: cc.Component): IterableIterator<any> {
+	/**
+	 * 先等到下一个LateUpdate，再等待条件满足或超时后执行回调
+	 * @param waitUntil - 等待的条件，返回true则执行回调
+	 * @param timeout - 超时时间
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
+	public timeoutLateWait(waitUntil: () => boolean, timeout: number, callback: (isTimeout: boolean) => void, owner?: cc.Component): Coroutine {
+		return this.startCo(this.doTimeoutWait(waitUntil, callback, true, timeout, owner), owner);
+	}
+	private * doTimeoutWait(waitUntil: () => boolean, callback: (isTimeout: boolean) => void, late: boolean, timeout: number, owner: cc.Component): IterableIterator<any> {
 		if (callback) {
-			yield this.waitForEndOfLag(owner);
-			callback.call(owner);
+			if (late) {
+				yield new WaitForLateUpdate();
+			}
+			let timeoutMS = timeout && timeout * 1000 || 0;
+			let time = Date.now();
+			let isTimeout = false;
+			if (waitUntil) {
+				while (!(isTimeout = Date.now() - time >= timeoutMS) && !waitUntil.call(owner)) {
+					yield null;
+				}
+			}
+			callback.call(owner, isTimeout);
 		}
 	}
-	public waitForEndOfLag(owner?: cc.Component): Coroutine {
-		return this.startCo(this.doWaitForEndOfLag(), owner);
+
+	/**
+	 * 等待帧率稳定后执行回调，也可以在迭代器中 yield 返回的协程对象，用于等待帧率稳定
+	 * 帧率稳定的定义：最近若干帧（3帧）帧间隔的方差小于一定阈值（0.00001）
+	 * 由于帧率可能会一直不稳定，所以用一个最大帧数（20）来避免协程一直在等待中
+	 * @param callback - 需要执行的回调
+	 * @param owner - 协程的拥有者，可以通过它来批量结束协程
+	 * @return 协程对象
+	 */
+	public endOfLag(callback?: () => void, owner?: cc.Component): Coroutine {
+		return this.startCo(this.doEndOfLag(callback, owner), owner);
 	}
 	private readonly LAG_FRAME_COUNT_MAX = 20;
 	private readonly LAG_CHECK_FRAME_COUNT = 3;
 	private readonly LAG_CHECK_THRESHOLD = 0.00001;
-	private * doWaitForEndOfLag(): IterableIterator<any> {
+	private * doEndOfLag(callback: () => void, owner: cc.Component): IterableIterator<any> {
 		let maxFrame = cc.director.getTotalFrames() + this.LAG_FRAME_COUNT_MAX;
 		let deltaTimeList: number[] = [];
 		deltaTimeList.push(cc.director.getDeltaTime());
@@ -445,12 +587,11 @@ export class CoroutineManager extends cc.Component {
 			if (deltaTimeList.length > this.LAG_CHECK_FRAME_COUNT) {
 				deltaTimeList.shift();
 			}
-			let length = deltaTimeList.length;
-			let average = deltaTimeList.reduce((total, current) => total + current) / length;
-			let variance = deltaTimeList.reduce((total, current) => total + Math.pow(current - average, 2)) / length;
+			let variance = Math.variance(...deltaTimeList);
 			if (variance < this.LAG_CHECK_THRESHOLD) {
 				break;
 			}
 		}
+		callback?.call(owner);
 	}
 }

@@ -106,19 +106,15 @@ CoroutineManager.instance.lateFrameLoop(interval: number, loopUntil: () => boole
 * 在帧率稳定后执行逻辑  
 帧率稳定的定义：连续3帧的帧间隔（秒）的方差在0.00001（方差范围）内，或从当前开始超过20帧。（3、0.00001、20可以通过改源码调整）
 
-　　· 在帧率稳定后执行callback
+　　· 在帧率稳定后执行callback，并获得一个立即开始且在帧率稳定后结束的协程对象
 ```
-CoroutineManager.instance.endOfLag(callback: () => void, owner?: cc.Component): Coroutine;
-```
-　　· 获得一个立即开始且在帧率稳定后结束的协程对象
-```
-CoroutineManager.instance.waitForEndOfLag(owner?: cc.Component): Coroutine;
+CoroutineManager.instance.endOfLag(callback?: () => void, owner?: cc.Component): Coroutine;
 ```
 　 　 该协程对象可用于在另一个协程中yield。
 ```
 function* testCoroutine(): IterableIterator<any> {
 	console.log("Instantiate a large prefab.");
-	yield CoroutineManager.instance.waitForEndOfLag();
+	yield CoroutineManager.instance.endOfLag();
 	console.log("Frame rate is stable.");
 }
 ```
