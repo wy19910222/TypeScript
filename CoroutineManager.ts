@@ -68,6 +68,11 @@ export class Coroutine {
 		return this._current;
 	}
 
+	private _done: boolean;
+	public get isDone(): boolean {
+		return this._done;
+	}
+
 	constructor(iterator: IterableIterator<any>, mOwner?: cc.Component) {
 		this._iterator = iterator;
 		this._owner = mOwner;
@@ -82,6 +87,7 @@ export class Coroutine {
 			console.error(e);
 		}
 		this._current = result.value;
+		this._done = result.done;
 		return result;
 	}
 }
@@ -181,7 +187,7 @@ export class CoroutineManager extends cc.Component {
 			if (coroutine) {
 				if (!coroutine.owner || coroutine.owner.isValid) {
 					let current: Coroutine = coroutine.current;
-					if (this.isCoroutineDone(current)) {
+					if (current.isDone) {
 						if (!coroutine.next().done) {
 							this.updateCoroutine(coroutine);
 							this.addCoroutine(coroutine);
@@ -294,13 +300,17 @@ export class CoroutineManager extends cc.Component {
 
 	/**
 	 * 结束某个协程
-	 * @param iteratorOrCoroutine - 需要结束的迭代器对象(或协程)
+	 * @param iteratorOrCoroutine - 需要结束的迭代器对象(或协程)，可以传空或者传入已经结束的协程
 	 */
 	public stopCo(iteratorOrCoroutine: IterableIterator<any> | Coroutine): void {
-		if (iteratorOrCoroutine instanceof Coroutine) {
-			this.removeCoroutineBy((_, coroutine) => coroutine === iteratorOrCoroutine);
-		} else {
-			this.removeCoroutineBy((_, coroutine) => coroutine.iterator === iteratorOrCoroutine);
+		if (iteratorOrCoroutine) {
+			if (iteratorOrCoroutine instanceof Coroutine) {
+				if (!iteratorOrCoroutine.isDone) {
+					this.removeCoroutineBy((_, coroutine) => coroutine === iteratorOrCoroutine);
+				}
+			} else {
+				this.removeCoroutineBy((_, coroutine) => coroutine.iterator === iteratorOrCoroutine);
+			}
 		}
 	}
 
